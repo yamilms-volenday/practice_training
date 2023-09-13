@@ -47,21 +47,6 @@ const Home = () => {
 		return res.json();
 	};
 
-	//function to update an employee
-	const updateEmployee = async id => {
-		const res = await fetch('/api/updateEmployee', {
-			method: 'UPDATE',
-			headers: {
-				'Content-Type': 'application/json'
-			},
-			body: JSON.stringify({ id })
-		});
-		if (!res.ok) {
-			throw new Error('Could not update employee');
-		}
-		return res.json();
-	};
-
 	// React Query to get employees
 	const { data: employees, error, isLoading } = useQuery('employees', fetchEmployees);
 
@@ -76,11 +61,6 @@ const Home = () => {
 
 	// React Query to delete an employee
 	const deleteEmployeeMutation = useMutation(deleteEmployee, {
-		onSuccess: () => queryClient.invalidateQueries('employees')
-	});
-
-	// React Query to update an employee
-	const updateEmployeeMutation = useMutation(updateEmployee, {
 		onSuccess: () => queryClient.invalidateQueries('employees')
 	});
 
@@ -110,13 +90,12 @@ const Home = () => {
 
 	return (
 		<div className="container">
-			
 			<h1 className="header">Employee List</h1>
 			<ul className="get-list">
 				{employees.map(employee => (
 					<li key={employee.id}>
-						<h2 className='employee-name'>{employee.first_name}</h2>
-						<div className='container-buttons'>
+						<h2 className="employee-name">{employee.first_name}</h2>
+						<div className="container-buttons">
 							<button className="employee-buttons" onClick={() => handleDeleteEmployee(employee.id)}>
 								Delete
 							</button>
@@ -127,7 +106,9 @@ const Home = () => {
 					</li>
 				))}
 			</ul>
-			<button className='form-button' onClick={() => setShowCreateForm(!showCreateForm)}>Create Employee</button>
+			<button className="form-button" onClick={() => setShowCreateForm(!showCreateForm)}>
+				Create Employee
+			</button>
 			{showCreateForm && <CreateForm onSubmit={handleCreateEmployee} />}
 		</div>
 	);

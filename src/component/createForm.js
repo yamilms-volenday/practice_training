@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { calculateAge } from '../utils';
 
 export default function CreateForm({ onSubmit }) {
 	const [newEmployee, setNewEmployee] = useState({
@@ -6,6 +7,15 @@ export default function CreateForm({ onSubmit }) {
 		last_name: '',
 		birthday: ''
 	});
+
+	const [calculatedAge, setCalculatedAge] = useState(null);
+
+	// Call calculateAge function whenever the birthday field changes
+	useEffect(() => {
+		if (newEmployee.birthday) {
+			setCalculatedAge(calculateAge(newEmployee.birthday));
+		}
+	}, [newEmployee.birthday]);
 
 	const handleSubmit = () => {
 		onSubmit(newEmployee);
@@ -18,7 +28,7 @@ export default function CreateForm({ onSubmit }) {
 
 	return (
 		<div className="container-form">
-			<div className='form-area'>
+			<div className="form-area">
 				<form>
 					<div className="form_group">
 						<label className="sub_title" htmlFor="first_name">
@@ -59,6 +69,20 @@ export default function CreateForm({ onSubmit }) {
 							onChange={e => setNewEmployee({ ...newEmployee, birthday: e.target.value })}
 						/>
 					</div>
+					{calculatedAge !== null && (
+						<div className="form_group">
+						<label className="sub_title" htmlFor="birthday">
+							Age:
+						</label>
+						<input
+							className="form_style"
+							type="text"
+							id="age"
+							name="age"
+							value={calculatedAge}
+						/>
+					</div>
+					)}
 					<div>
 						<button className="employee-buttons btn" type="button" onClick={handleSubmit}>
 							Create

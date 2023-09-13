@@ -4,6 +4,22 @@ body{
   font-family: 'Courier New', Courier, monospace;
 }
 
+.header {
+  position: relative;
+  display: inline-block;
+}
+
+.header::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: -1;
+  background-color: #ffe54c;
+}
+
 .canva{
   display: flex;
 }
@@ -160,7 +176,8 @@ body{
 }
 
 .title{
-  color: #7b4397;
+  color: #000;
+  background-color: #ffe54c;
   font-weight: 900;
   font-size: 1.5em;
   margin-top: 20px;
@@ -169,6 +186,7 @@ body{
 .sub_title{
   font-weight: 600;
   margin: 5px 0;
+  color: #000;
 }
 
 .form_group{
@@ -200,6 +218,7 @@ body{
   padding: 12px 10px;
   background: #7b4397;
   font-weight: 800;
+  color: #fff;
 }
 
 @media (prefers-color-scheme: dark) {
