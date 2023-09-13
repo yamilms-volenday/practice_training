@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { useQuery, useMutation, useQueryClient } from 'react-query';
+import * as Yup from 'yup';
 
 export default function DetailEmployee() {
 	const router = useRouter();
 	const { id } = router.query;
+	const [errors, setErrors] = useState({});
 
 	const [formData, setFormData] = useState({
 		id,
@@ -13,6 +15,13 @@ export default function DetailEmployee() {
 		birthday: '',
 		age: ''
 	});
+
+	const validationSchema = Yup.object().shape({
+		first_name: Yup.string().required('First name is required').min(2, 'First name must be at least 2 characters'),
+		last_name: Yup.string().required('Last name is required').min(2, 'Last name must be at least 2 characters'),
+		birthday: Yup.date().required('Birthday is required').max(new Date(), 'Birthday must be in the past')
+	});
+
 
 	const queryClient = useQueryClient();
 
@@ -82,18 +91,19 @@ export default function DetailEmployee() {
 
 	const handleChange = e => {
 		const { name, value } = e.target;
-
-		// If the field being changed is 'birthday', format it to YYYY-MM-DD
+	
+		// If the field being changed is 'birthday'
 		if (name === 'birthday') {
-			const date = new Date(value);
-			const formattedDate = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(
-				date.getDate()
-			).padStart(2, '0')}`;
-
-			setFormData({
-				...formData,
-				[name]: formattedDate
-			});
+			// Validate the date string before converting it to a Date object
+			const dateParts = value.split('-'); // assuming input format is YYYY-MM-DD
+			if (dateParts.length === 3 && dateParts.every(part => !isNaN(part))) {
+				setFormData({
+					...formData,
+					[name]: value // Directly use the value
+				});
+			} else {
+				alert("invalid date");
+			}
 		} else {
 			setFormData({
 				...formData,
@@ -101,12 +111,24 @@ export default function DetailEmployee() {
 			});
 		}
 	};
+	
 
-	const handleUpdate = e => {
+	const handleUpdate = async e => {
 		e.preventDefault();
-		if (id) {
-			setFormData(prevState => ({ ...prevState, id }));
-			updateEmployeeMutation.mutate({ ...formData, id });
+		try{
+			await validationSchema.validate(formData, { abortEarly: false });
+			if (id) {
+				setFormData(prevState => ({ ...prevState, id }));
+				updateEmployeeMutation.mutate({ ...formData, id });
+			}
+			setErrors({});
+		}catch(e){
+			setErrors(
+				e.inner.reduce((acc, curr) => {
+					acc[curr.path] = curr.message;
+					return acc;
+				}, {})
+			);
 		}
 	};
 
@@ -126,13 +148,14 @@ export default function DetailEmployee() {
 		<div className="container-form">
 			<h1 className="title">Detail Employee: {id}</h1>
 			<div className="form-area">
-				<form>
+				<form className='create-form'>
 					<div className="form_group">
 						<label className="sub_title" htmlFor="first_name">
 							First Name:
 						</label>
 						<input
 							className="form_style"
+							type='text'
 							name="first_name"
 							value={formData.first_name}
 							onChange={handleChange}
@@ -145,6 +168,7 @@ export default function DetailEmployee() {
 						<input
 							className="form_style"
 							name="last_name"
+							type='text'
 							value={formData.last_name}
 							onChange={handleChange}
 						/>
@@ -156,6 +180,7 @@ export default function DetailEmployee() {
 						<input
 							className="form_style"
 							name="birthday"
+							type='date'
 							value={formData.birthday}
 							onChange={handleChange}
 						/>
@@ -164,8 +189,11 @@ export default function DetailEmployee() {
 						<label className="sub_title" htmlFor="birthday">
 							Age:
 						</label>
-						<input className="form_style" name="age" value={formData.age} onChange={handleChange} />
+						<input className="form_style" name="age" readOnly value={formData.age} onChange={handleChange} />
 					</div>
+					{errors.first_name && <p className="sub_title">{errors.first_name}</p>}
+					{errors.last_name && <p className="sub_title">{errors.last_name}</p>}
+					{errors.birthday && <p className="sub_title">{errors.birthday}</p>}
 					<div>
 						<button className="employee-buttons btn" onClick={handleUpdate}>
 							Update Employee

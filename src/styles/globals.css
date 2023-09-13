@@ -175,6 +175,12 @@ body{
   box-shadow: 30px 35px 2px #52206b;
 }
 
+.create-form{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
 .title{
   color: #000;
   background-color: #ffe54c;
