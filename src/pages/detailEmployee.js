@@ -17,11 +17,18 @@ export default function DetailEmployee() {
 	});
 
 	const validationSchema = Yup.object().shape({
-		first_name: Yup.string().required('First name is required').min(2, 'First name must be at least 2 characters'),
-		last_name: Yup.string().required('Last name is required').min(2, 'Last name must be at least 2 characters'),
+		first_name: Yup.string()
+			.required('First name is required')
+			.min(2, 'First name must be at least 2 characters')
+			.matches(/^[A-Za-z]+$/, 'Only letters allowed'), // Regex to match only letters
+
+		last_name: Yup.string()
+			.required('Last name is required')
+			.min(2, 'Last name must be at least 2 characters')
+			.matches(/^[A-Za-z]+$/, 'Only letters allowed'), // Regex to match only letters
+
 		birthday: Yup.date().required('Birthday is required').max(new Date(), 'Birthday must be in the past')
 	});
-
 
 	const queryClient = useQueryClient();
 
@@ -91,7 +98,7 @@ export default function DetailEmployee() {
 
 	const handleChange = e => {
 		const { name, value } = e.target;
-	
+
 		// If the field being changed is 'birthday'
 		if (name === 'birthday') {
 			// Validate the date string before converting it to a Date object
@@ -102,7 +109,7 @@ export default function DetailEmployee() {
 					[name]: value // Directly use the value
 				});
 			} else {
-				alert("invalid date");
+				alert('invalid date');
 			}
 		} else {
 			setFormData({
@@ -111,18 +118,17 @@ export default function DetailEmployee() {
 			});
 		}
 	};
-	
 
 	const handleUpdate = async e => {
 		e.preventDefault();
-		try{
+		try {
 			await validationSchema.validate(formData, { abortEarly: false });
 			if (id) {
 				setFormData(prevState => ({ ...prevState, id }));
 				updateEmployeeMutation.mutate({ ...formData, id });
 			}
 			setErrors({});
-		}catch(e){
+		} catch (e) {
 			setErrors(
 				e.inner.reduce((acc, curr) => {
 					acc[curr.path] = curr.message;
@@ -148,14 +154,14 @@ export default function DetailEmployee() {
 		<div className="container-form">
 			<h1 className="title">Detail Employee: {id}</h1>
 			<div className="form-area">
-				<form className='create-form'>
+				<form className="create-form">
 					<div className="form_group">
 						<label className="sub_title" htmlFor="first_name">
 							First Name:
 						</label>
 						<input
 							className="form_style"
-							type='text'
+							type="text"
 							name="first_name"
 							value={formData.first_name}
 							onChange={handleChange}
@@ -168,7 +174,7 @@ export default function DetailEmployee() {
 						<input
 							className="form_style"
 							name="last_name"
-							type='text'
+							type="text"
 							value={formData.last_name}
 							onChange={handleChange}
 						/>
@@ -180,7 +186,7 @@ export default function DetailEmployee() {
 						<input
 							className="form_style"
 							name="birthday"
-							type='date'
+							type="date"
 							value={formData.birthday}
 							onChange={handleChange}
 						/>
@@ -189,7 +195,13 @@ export default function DetailEmployee() {
 						<label className="sub_title" htmlFor="birthday">
 							Age:
 						</label>
-						<input className="form_style" name="age" readOnly value={formData.age} onChange={handleChange} />
+						<input
+							className="form_style"
+							name="age"
+							readOnly
+							value={formData.age}
+							onChange={handleChange}
+						/>
 					</div>
 					{errors.first_name && <p className="sub_title">{errors.first_name}</p>}
 					{errors.last_name && <p className="sub_title">{errors.last_name}</p>}

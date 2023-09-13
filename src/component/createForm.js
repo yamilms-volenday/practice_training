@@ -13,8 +13,16 @@ export default function CreateForm({ onSubmit }) {
 
 	// Validation Schema
 	const validationSchema = Yup.object().shape({
-		first_name: Yup.string().required('First name is required').min(2, 'First name must be at least 2 characters'),
-		last_name: Yup.string().required('Last name is required').min(2, 'Last name must be at least 2 characters'),
+		first_name: Yup.string()
+			.required('First name is required')
+			.min(2, 'First name must be at least 2 characters')
+			.matches(/^[A-Za-z]+$/, 'Only letters allowed for first name'), // Regex to match only letters
+
+		last_name: Yup.string()
+			.required('Last name is required')
+			.min(2, 'Last name must be at least 2 characters')
+			.matches(/^[A-Za-z]+$/, 'Only letters allowed for last name'), // Regex to match only letters
+
 		birthday: Yup.date().required('Birthday is required').max(new Date(), 'Birthday must be in the past')
 	});
 
