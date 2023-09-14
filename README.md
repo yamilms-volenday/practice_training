@@ -63,7 +63,7 @@ UPDATE employees SET age = TIMESTAMPDIFF(YEAR, birthday, CURDATE());
 
 ```
 
-##Enviroment variables
+## Enviroment variables
 
 Create a .env.local file:
 
@@ -75,7 +75,7 @@ MYSQL_DATABASE=Employees
 
 ```
 
-##About the app
+## About the app
 
 1. The homepage displays the employees added to the database.
 2. To add a new employee, click on the "Create Employee" button.
