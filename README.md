@@ -1,4 +1,4 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+This is a practice project for Volenday
 
 ## Getting Started
 
@@ -18,19 +18,68 @@ You can start editing the page by modifying `app/page.js`. The page auto-updates
 
 This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
 
-## Learn More
+## Database Set-up
 
-To learn more about Next.js, take a look at the following resources:
+Database is MySQL
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+1. Create the database:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+```
+CREATE DATABASE Employees;
 
-## Deploy on Vercel
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+2. Use the database:
+```
+USE Employees;
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+```
 
+3. Create the employees table:
+```
+CREATE TABLE employees (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  first_name VARCHAR(255),
+  last_name VARCHAR(255),
+  birthday DATE,
+  age INT
+);
 
+```
+
+4. Enable the MySQL event scheduler:
+```
+SET GLOBAL event_scheduler = ON;
+
+```
+
+5. Create an event to update employee ages:
+```
+CREATE EVENT update_employee_ages
+ON SCHEDULE EVERY 1 DAY
+STARTS TIMESTAMP(CURRENT_DATE, '00:00:00')
+DO
+UPDATE employees SET age = TIMESTAMPDIFF(YEAR, birthday, CURDATE());
+
+```
+
+##Enviroment variables
+
+Create a .env.local file:
+
+```
+MYSQL_HOST=<Name of your host>
+MYSQL_USER=<Name of your User>
+MYSQL_PASSWORD=<Your user password>
+MYSQL_DATABASE=Employees
+
+```
+
+##About the app
+
+1. The homepage displays the employees added to the database.
+2. To add a new employee, click on the "Create Employee" button.
+3. You can delete an employee by clicking on the "Delete" button.
+4. View all details of an employee by clicking on the "Details" button.
+5. From the details page, you can modify employee data by changing the inputs and clicking on the "Update Employee" button.
+6. Alternatively, you can return to the homepage by clicking on the "Back to Home" button.
