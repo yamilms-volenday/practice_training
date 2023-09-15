@@ -2,9 +2,12 @@ import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from 'react-query';
 import { useRouter } from 'next/router';
 import CreateForm from '@/component/createForm';
+import { Button, Row, Col } from 'antd';
+import Head from 'next/head';
 
 const Home = () => {
 	const [showCreateForm, setShowCreateForm] = useState(false);
+	const ButtonProps = showCreateForm ? { danger: true } : {};
 
 	const router = useRouter();
 
@@ -89,28 +92,44 @@ const Home = () => {
 	}
 
 	return (
-		<div className="container">
-			<h1 className="header">Employee List</h1>
-			<ul className="get-list">
-				{employees.map(employee => (
-					<li key={employee.id}>
-						<h2 className="employee-name">{employee.first_name}</h2>
-						<div className="container-buttons">
-							<button className="employee-buttons" onClick={() => handleDeleteEmployee(employee.id)}>
-								Delete
-							</button>
-							<button className="employee-buttons" onClick={() => handleUpdateEmployee(employee.id)}>
-								Details
-							</button>
-						</div>
-					</li>
-				))}
-			</ul>
-			<button className="form-button" onClick={() => setShowCreateForm(!showCreateForm)}>
-				Create Employee
-			</button>
-			{showCreateForm && <CreateForm onSubmit={handleCreateEmployee} />}
-		</div>
+		<>
+			<Head>
+				<title>Employee Management System</title>
+			</Head>
+			<div className="text-black flex flex-col items-center justify-around m-0 pb-5">
+				<h1 className="text-4xl font-extrabold mt-12 mb-10 border-b-2 border-red-400">Employee List</h1>
+				<Row gutter={[16, 16]} align="middle" className="my-4">
+					{employees.map((employee, index) => (
+						<Col key={employee.id} xs={24} sm={8} align="middle" justify="center">
+							<h2 className="text-2xl font-semibold mb-2">{employee.first_name}</h2>
+							<div className="my-4">
+								<Button
+									className="text-white bg-blue-400 mr-1"
+									type="primary"
+									onClick={() => handleUpdateEmployee(employee.id)}>
+									Details
+								</Button>
+								<Button
+									type="primary"
+									className="ml-1"
+									danger
+									onClick={() => handleDeleteEmployee(employee.id)}>
+									Delete
+								</Button>
+							</div>
+						</Col>
+					))}
+				</Row>
+				<Button
+					className="flex items-center text-xl p-6 text-white bg-blue-400 e mt-6"
+					type="primary"
+					{...ButtonProps}
+					onClick={() => setShowCreateForm(!showCreateForm)}>
+					{showCreateForm ? 'Cancel' : 'Create Employee'}
+				</Button>
+				{showCreateForm && <CreateForm onSubmit={handleCreateEmployee} />}
+			</div>
+		</>
 	);
 };
 

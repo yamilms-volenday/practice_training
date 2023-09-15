@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { calculateAge } from '../utils';
+import { Button, Form, Input, DatePicker } from 'antd';
 import * as Yup from 'yup';
 
 export default function CreateForm({ onSubmit }) {
@@ -54,68 +55,66 @@ export default function CreateForm({ onSubmit }) {
 	};
 
 	return (
-		<div className="container-form">
-			<div className="form-area">
-				<form>
-					<div className="form_group">
-						<label className="sub_title" htmlFor="first_name">
-							First Name:
-						</label>
-						<input
-							className="form_style"
-							type="text"
-							id="first_name"
-							name="first_name"
-							value={newEmployee.first_name}
-							onChange={e => setNewEmployee({ ...newEmployee, first_name: e.target.value })}
-						/>
-					</div>
-					<div className="form_group">
-						<label className="sub_title" htmlFor="last_name">
-							Last Name:
-						</label>
-						<input
-							className="form_style"
-							type="text"
-							id="last_name"
-							name="last_name"
-							value={newEmployee.last_name}
-							onChange={e => setNewEmployee({ ...newEmployee, last_name: e.target.value })}
-						/>
-					</div>
-					<div className="form_group">
-						<label className="sub_title" htmlFor="birthday">
-							Birthday:
-						</label>
-						<input
-							className="form_style"
-							type="date"
-							id="birthday"
-							name="birthday"
-							value={newEmployee.birthday}
-							onChange={e => setNewEmployee({ ...newEmployee, birthday: e.target.value })}
-						/>
-					</div>
-					{calculatedAge !== null && (
-						<div className="form_group">
-							<label className="sub_title" htmlFor="birthday">
-								Age:
-							</label>
-							<input className="form_style" type="text" id="age" name="age" value={calculatedAge} />
+		<div className="flex flex-col items-center justify-center text-center border-3 rounded-lg p-0 mt-3">
+			<Form
+				layout="horizontal"
+				className="flex flex-col items-stretch justify-center bg-white rounded-lg w-full p-5">
+				<Form.Item label="First Name" labelCol={{ span: 8 }} wrapperCol={{ span: 16 }} className="m-0 mt-4">
+					<Input
+						className="focus:outline-none border-2 border-black shadow-md rounded-md focus:shadow-sm focus:translate-y-1 text-black"
+						value={newEmployee.first_name}
+						onChange={e => setNewEmployee({ ...newEmployee, first_name: e.target.value })}
+					/>
+					{errors.first_name && (
+						<div className="flex justify-center">
+							<p className="sub_title text-red-500">{errors.first_name}</p>
 						</div>
 					)}
-					<div>
-						{errors.first_name && <p className="sub_title">{errors.first_name}</p>}
-						{errors.last_name && <p className="sub_title">{errors.last_name}</p>}
-						{errors.birthday && <p className="sub_title">{errors.birthday}</p>}
+				</Form.Item>
+
+				<Form.Item label="Last Name" labelCol={{ span: 8 }} wrapperCol={{ span: 16 }} className="m-0 mt-4">
+					<Input
+						className="focus:outline-none border-2 border-black shadow-md rounded-md focus:shadow-sm focus:translate-y-1 text-black"
+						value={newEmployee.last_name}
+						onChange={e => setNewEmployee({ ...newEmployee, last_name: e.target.value })}
+					/>
+					{errors.last_name && (
+						<div className="flex justify-center">
+							<p className="sub_title text-red-500">{errors.last_name}</p>
+						</div>
+					)}
+				</Form.Item>
+
+				<Form.Item label="Birthday" labelCol={{ span: 8 }} wrapperCol={{ span: 16 }} className="m-0 mt-4">
+					<div className="focus:outline-none border-2 border-black shadow-md rounded-md focus:shadow-sm focus:translate-y-1 text-black">
+						<DatePicker
+							bordered={false}
+							onChange={(date, dateString) => setNewEmployee({ ...newEmployee, birthday: dateString })}
+						/>
 					</div>
-					<div>
-						<button className="employee-buttons btn" type="button" onClick={handleSubmit}>
-							Create
-						</button>
+					{errors.birthday && (
+						<div className="flex justify-center">
+							<p className="sub_title text-red-500">{errors.birthday}</p>
+						</div>
+					)}
+				</Form.Item>
+
+				{calculatedAge !== null && (
+					<div className="flex justify-center">
+						<p className="font-bold text-purple-900 mt-4">{`Your age is: ${calculatedAge}`}</p>
 					</div>
-				</form>
-			</div>
+				)}
+
+				<Form.Item wrapperCol={{ span: 24 }} className="flex justify-center m-0 mt-4">
+					<Button
+						type="primary"
+						htmlType="submit"
+						className="text-white bg-blue-400 hover:bg-blue-500"
+						onClick={handleSubmit}>
+						Create
+					</Button>
+				</Form.Item>
+			</Form>
 		</div>
 	);
 }
