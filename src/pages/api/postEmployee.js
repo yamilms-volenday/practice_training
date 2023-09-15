@@ -1,7 +1,6 @@
 import pool from '@/app/database';
-import { calculateAge } from '@/utils'
+import { calculateAge } from '@/utils';
 export default async function postEmployee(req, res) {
-
 	try {
 		const { first_name, last_name, birthday } = req.body;
 

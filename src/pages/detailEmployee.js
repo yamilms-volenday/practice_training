@@ -1,14 +1,17 @@
 import React, { useState, useEffect } from 'react';
+import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { useQuery, useMutation, useQueryClient } from 'react-query';
+import dayjs from 'dayjs';
 import * as Yup from 'yup';
-import { Typography, Button, Input, Form } from 'antd';
+import { Typography, Button, Input, Form, DatePicker } from 'antd';
 const { Title } = Typography;
 
 export default function DetailEmployee() {
 	const router = useRouter();
 	const { id } = router.query;
 	const [errors, setErrors] = useState({});
+	const [update, setUpdate] = useState(false);
 
 	const [formData, setFormData] = useState({
 		id,
@@ -58,6 +61,10 @@ export default function DetailEmployee() {
 			},
 			body: JSON.stringify(data)
 		});
+		if (!res.ok) {
+			throw new Error('Could not update employee');
+		}
+		setUpdate(true);
 		return res.json();
 	};
 
@@ -82,7 +89,6 @@ export default function DetailEmployee() {
 				2,
 				'0'
 			)}-${String(incomingDate.getDate()).padStart(2, '0')}`;
-
 			setFormData({
 				first_name: employee.first_name,
 				last_name: employee.last_name,
@@ -153,83 +159,116 @@ export default function DetailEmployee() {
 	}
 
 	return (
-		<div className="flex flex-col items-center justify-center text-center h-full">
-			<Title className="title">Detail Employee with id: {id}</Title>
-			<div className="flex flex-col items-center justify-center text-center border-3 rounded-lg p-0 mt-3">
-				<Form
-					layout="horizontal"
-					className="flex flex-col items-stretch justify-center bg-white rounded-lg w-full p-5">
-					<Form.Item label="First Name" labelCol={{ span: 8 }} wrapperCol={{ span: 16 }} className="m-0 mt-4">
-						<Input
-							className="focus:outline-none border-2 border-black shadow-md rounded-md focus:shadow-sm focus:translate-y-1 text-black "
-							value={formData.first_name}
-							onChange={handleChange}
-							name='first_name'
-						/>
-					</Form.Item>
-					{errors.first_name && (
-						<div className="flex justify-center">
-							<p className="sub_title text-red-500">{errors.first_name}</p>
-						</div>
-					)}
+		<>
+			<Head>
+				<title>Employee Details</title>
+			</Head>
+			<div className="flex flex-col items-center justify-center text-center h-full">
+				<Title className="title">Detail Employee with id: {id}</Title>
+				{update && <h2 className="text-green-500 font-semibold">Employee updated successfully</h2>}
+				<div className="flex flex-col items-center justify-center text-center border-3 rounded-lg p-0 mt-3">
+					<Form
+						layout="horizontal"
+						className="flex flex-col items-stretch justify-center bg-white rounded-lg w-full p-5">
+						<Form.Item
+							label="First Name"
+							labelCol={{ span: 8 }}
+							wrapperCol={{ span: 16 }}
+							className="m-0 mt-4">
+							<Input
+								className="focus:outline-none border-2 border-black shadow-md rounded-md focus:shadow-sm focus:translate-y-1 text-black "
+								value={formData.first_name}
+								onChange={handleChange}
+								name="first_name"
+							/>
+							{errors.first_name && (
+								<div className="flex justify-center">
+									<p className="sub_title text-red-500">{errors.first_name}</p>
+								</div>
+							)}
+						</Form.Item>
 
-					<Form.Item label="Last Name" labelCol={{ span: 8 }} wrapperCol={{ span: 16 }} className="m-0 mt-4">
-						<Input
-							className="focus:outline-none border-2 border-black shadow-md rounded-md focus:shadow-sm focus:translate-y-1 text-black"
-							value={formData.last_name}
-							onChange={handleChange}
-							name='last_name'
-						/>
-					</Form.Item>
-					{errors.last_name && (
-						<div className="flex justify-center">
-							<p className="sub_title text-red-500">{errors.last_name}</p>
-						</div>
-					)}
+						<Form.Item
+							label="Last Name"
+							labelCol={{ span: 8 }}
+							wrapperCol={{ span: 16 }}
+							className="m-0 mt-4">
+							<Input
+								className="focus:outline-none border-2 border-black shadow-md rounded-md focus:shadow-sm focus:translate-y-1 text-black"
+								value={formData.last_name}
+								onChange={handleChange}
+								name="last_name"
+							/>
+							{errors.last_name && (
+								<div className="flex justify-center">
+									<p className="sub_title text-red-500">{errors.last_name}</p>
+								</div>
+							)}
+						</Form.Item>
 
+						<Form.Item
+							label="Birthday"
+							labelCol={{ span: 8 }}
+							wrapperCol={{ span: 16 }}
+							className="m-0 mt-4">
+							<div className="focus:outline-none border-2 border-black shadow-md rounded-md focus:shadow-sm focus:translate-y-1 text-black">
+								<DatePicker
+									bordered={false}
+									value={formData.birthday ? dayjs(formData.birthday, 'YYYY-MM-DD') : null}
+									onChange={(date, dateString) => {
+										setFormData({ ...formData, birthday: dateString });
+									}}
+								/>
+							</div>
+							{errors.birthday && (
+								<div className="flex justify-center">
+									<p className="sub_title text-red-500">{errors.birthday}</p>
+								</div>
+							)}
+						</Form.Item>
+						{/*
 					<Form.Item label="Birthday" labelCol={{ span: 8 }} wrapperCol={{ span: 16 }} className="m-0 mt-4">
 						<Input
 							type="date"
 							className="focus:outline-none border-2 border-black shadow-md rounded-md focus:shadow-sm focus:translate-y-1 text-black"
 							value={formData.birthday}
 							onChange={handleChange}
-							name='birthday'
+							name="birthday"
 						/>
+						{errors.birthday && (
+							<div className="flex justify-center">
+								<p className="sub_title text-red-500">{errors.birthday}</p>
+							</div>
+						)}
 					</Form.Item>
-					{errors.birthday && (
+						*/}
+						<Form.Item label="Age" labelCol={{ span: 8 }} wrapperCol={{ span: 16 }} className="m-0 mt-4">
+							<Input
+								type="text"
+								className="focus:outline-none border-2 border-black shadow-md rounded-md focus:shadow-sm focus:translate-y-1 text-black"
+								value={formData.age}
+								readOnly
+							/>
+						</Form.Item>
 						<div className="flex justify-center">
-							<p className="sub_title text-red-500">{errors.birthday}</p>
+							<Form.Item wrapperCol={{ span: 24 }} className="flex justify-center m-0 mt-4 mr-1">
+								<Button type="default" htmlType="submit" onClick={handleUpdate}>
+									Update
+								</Button>
+							</Form.Item>
+							<Form.Item wrapperCol={{ span: 24 }} className="flex justify-center m-0 mt-4 ml-1">
+								<Button
+									type="primary"
+									htmlType="submit"
+									className="text-white bg-blue-400 hover:bg-blue-500"
+									onClick={handleBackHome}>
+									Go Back
+								</Button>
+							</Form.Item>
 						</div>
-					)}
-					<Form.Item label="Age" labelCol={{ span: 8 }} wrapperCol={{ span: 16 }} className="m-0 mt-4">
-						<Input
-							type="text"
-							className="focus:outline-none border-2 border-black shadow-md rounded-md focus:shadow-sm focus:translate-y-1 text-black"
-							value={formData.age}
-							readOnly
-						/>
-					</Form.Item>
-					<div className='flex justify-center'>
-						<Form.Item wrapperCol={{ span: 24 }} className="flex justify-center m-0 mt-4 mr-1">
-							<Button
-								type="default"
-								htmlType="submit"
-								onClick={handleUpdate}>
-								Update
-							</Button>
-						</Form.Item>
-						<Form.Item wrapperCol={{ span: 24 }} className="flex justify-center m-0 mt-4 ml-1">
-							<Button
-								type="primary"
-								htmlType="submit"
-								className="text-white bg-blue-400 hover:bg-blue-500"
-								onClick={handleBackHome}>
-								Go Back
-							</Button>
-						</Form.Item>
-					</div>
-				</Form>
+					</Form>
+				</div>
 			</div>
-		</div>
+		</>
 	);
 }

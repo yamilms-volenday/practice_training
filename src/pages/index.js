@@ -7,6 +7,7 @@ import Head from 'next/head';
 
 const Home = () => {
 	const [showCreateForm, setShowCreateForm] = useState(false);
+	const ButtonProps = showCreateForm ? { danger: true } : {};
 
 	const router = useRouter();
 
@@ -95,7 +96,7 @@ const Home = () => {
 			<Head>
 				<title>Employee Management System</title>
 			</Head>
-			<div className="text-black flex flex-col items-center justify-around m-0 p-0">
+			<div className="text-black flex flex-col items-center justify-around m-0 pb-5">
 				<h1 className="text-4xl font-extrabold mt-12 mb-10 border-b-2 border-red-400">Employee List</h1>
 				<Row gutter={[16, 16]} align="middle" className="my-4">
 					{employees.map((employee, index) => (
@@ -120,8 +121,9 @@ const Home = () => {
 					))}
 				</Row>
 				<Button
-					className="flex items-center text-xl px-5 py-2 bg-blue-500 text-white mt-6"
+					className="flex items-center text-xl p-6 text-white bg-blue-400 e mt-6"
 					type="primary"
+					{...ButtonProps}
 					onClick={() => setShowCreateForm(!showCreateForm)}>
 					{showCreateForm ? 'Cancel' : 'Create Employee'}
 				</Button>
