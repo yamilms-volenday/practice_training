@@ -24,19 +24,19 @@ Database is MySQL
 
 1. Create the database:
 
-```
+```bash
 CREATE DATABASE Employees;
 
 ```
 
 2. Use the database:
-```
+```bash
 USE Employees;
 
 ```
 
 3. Create the employees table:
-```
+```bash
 CREATE TABLE employees (
   id INT AUTO_INCREMENT PRIMARY KEY,
   first_name VARCHAR(255),
@@ -48,13 +48,13 @@ CREATE TABLE employees (
 ```
 
 4. Enable the MySQL event scheduler:
-```
+```bash
 SET GLOBAL event_scheduler = ON;
 
 ```
 
 5. Create an event to update employee ages:
-```
+```bash
 CREATE EVENT update_employee_ages
 ON SCHEDULE EVERY 1 DAY
 STARTS TIMESTAMP(CURRENT_DATE, '00:00:00')
@@ -67,7 +67,7 @@ UPDATE employees SET age = TIMESTAMPDIFF(YEAR, birthday, CURDATE());
 
 Create a .env.local file:
 
-```
+```bash
 MYSQL_HOST=<Name of your host>
 MYSQL_USER=<Name of your User>
 MYSQL_PASSWORD=<Your user password>

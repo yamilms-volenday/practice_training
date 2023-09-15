@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { useQuery, useMutation, useQueryClient } from 'react-query';
 import * as Yup from 'yup';
+import { Typography, Button, Input, Form } from 'antd';
+const { Title } = Typography;
 
 export default function DetailEmployee() {
 	const router = useRouter();
@@ -151,70 +153,82 @@ export default function DetailEmployee() {
 	}
 
 	return (
-		<div className="container-form">
-			<h1 className="title">Detail Employee: {id}</h1>
-			<div className="form-area">
-				<form className="create-form">
-					<div className="form_group">
-						<label className="sub_title" htmlFor="first_name">
-							First Name:
-						</label>
-						<input
-							className="form_style"
-							type="text"
-							name="first_name"
+		<div className="flex flex-col items-center justify-center text-center h-full">
+			<Title className="title">Detail Employee with id: {id}</Title>
+			<div className="flex flex-col items-center justify-center text-center border-3 rounded-lg p-0 mt-3">
+				<Form
+					layout="horizontal"
+					className="flex flex-col items-stretch justify-center bg-white rounded-lg w-full p-5">
+					<Form.Item label="First Name" labelCol={{ span: 8 }} wrapperCol={{ span: 16 }} className="m-0 mt-4">
+						<Input
+							className="focus:outline-none border-2 border-black shadow-md rounded-md focus:shadow-sm focus:translate-y-1 text-black "
 							value={formData.first_name}
 							onChange={handleChange}
+							name='first_name'
 						/>
-					</div>
-					<div className="form_group">
-						<label className="sub_title" htmlFor="last_name">
-							Last Name:
-						</label>
-						<input
-							className="form_style"
-							name="last_name"
-							type="text"
+					</Form.Item>
+					{errors.first_name && (
+						<div className="flex justify-center">
+							<p className="sub_title text-red-500">{errors.first_name}</p>
+						</div>
+					)}
+
+					<Form.Item label="Last Name" labelCol={{ span: 8 }} wrapperCol={{ span: 16 }} className="m-0 mt-4">
+						<Input
+							className="focus:outline-none border-2 border-black shadow-md rounded-md focus:shadow-sm focus:translate-y-1 text-black"
 							value={formData.last_name}
 							onChange={handleChange}
+							name='last_name'
 						/>
-					</div>
-					<div className="form_group">
-						<label className="sub_title" htmlFor="birthday">
-							Birthday:
-						</label>
-						<input
-							className="form_style"
-							name="birthday"
+					</Form.Item>
+					{errors.last_name && (
+						<div className="flex justify-center">
+							<p className="sub_title text-red-500">{errors.last_name}</p>
+						</div>
+					)}
+
+					<Form.Item label="Birthday" labelCol={{ span: 8 }} wrapperCol={{ span: 16 }} className="m-0 mt-4">
+						<Input
 							type="date"
+							className="focus:outline-none border-2 border-black shadow-md rounded-md focus:shadow-sm focus:translate-y-1 text-black"
 							value={formData.birthday}
 							onChange={handleChange}
+							name='birthday'
 						/>
-					</div>
-					<div className="form_group">
-						<label className="sub_title" htmlFor="birthday">
-							Age:
-						</label>
-						<input
-							className="form_style"
-							name="age"
-							readOnly
+					</Form.Item>
+					{errors.birthday && (
+						<div className="flex justify-center">
+							<p className="sub_title text-red-500">{errors.birthday}</p>
+						</div>
+					)}
+					<Form.Item label="Age" labelCol={{ span: 8 }} wrapperCol={{ span: 16 }} className="m-0 mt-4">
+						<Input
+							type="text"
+							className="focus:outline-none border-2 border-black shadow-md rounded-md focus:shadow-sm focus:translate-y-1 text-black"
 							value={formData.age}
-							onChange={handleChange}
+							readOnly
 						/>
+					</Form.Item>
+					<div className='flex justify-center'>
+						<Form.Item wrapperCol={{ span: 24 }} className="flex justify-center m-0 mt-4 mr-1">
+							<Button
+								type="default"
+								htmlType="submit"
+								onClick={handleUpdate}>
+								Update
+							</Button>
+						</Form.Item>
+						<Form.Item wrapperCol={{ span: 24 }} className="flex justify-center m-0 mt-4 ml-1">
+							<Button
+								type="primary"
+								htmlType="submit"
+								className="text-white bg-blue-400 hover:bg-blue-500"
+								onClick={handleBackHome}>
+								Go Back
+							</Button>
+						</Form.Item>
 					</div>
-					{errors.first_name && <p className="sub_title">{errors.first_name}</p>}
-					{errors.last_name && <p className="sub_title">{errors.last_name}</p>}
-					{errors.birthday && <p className="sub_title">{errors.birthday}</p>}
-					<div>
-						<button className="employee-buttons btn" onClick={handleUpdate}>
-							Update Employee
-						</button>
-						<button className="employee-buttons btn" onClick={handleBackHome}>
-							Back to Home
-						</button>
-					</div>
-				</form>
+				</Form>
 			</div>
 		</div>
 	);
